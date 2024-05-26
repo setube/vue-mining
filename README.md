@@ -7,4 +7,4 @@ npm i
 npm build
 
 # 项目预览
-![预览图](https://i0.hdslb.com/bfs/article/b47e24fa1ccc826c5cfb52036181e40b8941412.png)
+![预览图](https://s1.locimg.com/2024/05/27/3d2117d1e78f2.png)
