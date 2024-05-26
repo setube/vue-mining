@@ -7,5 +7,8 @@ npm i
 # 编译项目
 npm build
 
+# 在线体验
+https://setube.github.io/vue-mining/
+
 # 项目预览
 ![预览图](https://s1.locimg.com/2024/05/27/3d2117d1e78f2.png)
