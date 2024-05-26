@@ -13,6 +13,9 @@ npm build
 # 运行项目
 npm run serve
 
+# 技术栈
+Vue, Vuex, Element-ui
+
 # 在线体验
 https://setube.github.io/vue-mining
 
