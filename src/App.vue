@@ -100,21 +100,21 @@
                 </div>
             </span>
         </el-dialog>
-        <el-dialog title="数据清空提示" :visible.sync="clearshow" width="30%">
+        <el-dialog title="数据清空提示" :visible.sync="clearshow" width="95%">
             <span>清空数据属于危险操作, 请问是否要清空数据?</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="clear">取消</el-button>
                 <el-button type="primary" @click="cleardata">确定</el-button>
             </span>
         </el-dialog>
-        <el-dialog title="游戏作弊" :visible.sync="nextshow" width="35%" :before-close="next">
+        <el-dialog title="游戏作弊" :visible.sync="nextshow" width="95%" :before-close="next">
             <div class="dialog-footer">
                 <el-button @click="cheating(0)">铁镐冷却</el-button>
                 <el-button type="info" @click="cheating(1)">银稿冷却</el-button>
                 <el-button type="warning" @click="cheating(2)">金稿冷却</el-button>
             </div>
         </el-dialog>
-        <el-dialog title="你成功打开了秘笈！" :visible.sync="cheatsshow" width="30%" :before-close="cheats">
+        <el-dialog title="你成功打开了秘笈！" :visible.sync="cheatsshow" width="95%" :before-close="cheats">
             <span>通往哲♂学♂之路啊，我命令你开启吧！</span>
             <span slot="footer" class="dialog-footer">
                 <el-button type="success" @click="digAllMines">开启！</el-button>
