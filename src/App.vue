@@ -114,11 +114,13 @@
                 <el-button type="warning" @click="cheating(2)">金稿冷却</el-button>
             </div>
         </el-dialog>
-        <el-dialog title="你成功打开了秘笈！" :visible.sync="cheatsshow" width="95%" :before-close="cheats">
-            <span>通往哲♂学♂之路啊，我命令你开启吧！</span>
-            <span slot="footer" class="dialog-footer">
-                <el-button type="success" @click="digAllMines">开启！</el-button>
-            </span>
+        <el-dialog :title="cheatsshow ? '你成功打开了秘笈！' : ''" :visible.sync="cheatsshow" width="95%" :before-close="cheats">
+            <div class="dialog" v-if="cheatsshow">
+                <span>通往哲♂学♂之路啊，我命令你开启吧！</span>
+                <span slot="footer" class="dialog-footer">
+                    <el-button type="danger" @click="digAllMines">开启！</el-button>
+                </span>
+            </div>
         </el-dialog>
     </div>
 </template>
