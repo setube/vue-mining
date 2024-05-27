@@ -20,6 +20,8 @@ Vue, Vuex, Element-ui
 https://setube.github.io/vue-mining
 
 # 版本更新
+- [x] 作弊功能
+- [x] 彩蛋功能
 - [x] 头像自定义
 - [x] 挖矿后得知周围有没有矿石
 - [x] 数据导出 OR 数据导入 OR 数据清空
