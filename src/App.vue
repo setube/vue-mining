@@ -749,7 +749,7 @@
         bottom: 5px;
         border-radius: 5px;
         left: 50%;
-        transform: translateX(-120px);
+        transform: translateX(-150px);
         width: 300px;
         height: 62px;
         box-shadow: 0 0 5px rgba(0, 0, 0, .3);
