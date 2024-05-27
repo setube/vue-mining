@@ -12,15 +12,14 @@
                 <img :src="avatar" class="top_info_avatar_pic" @click="showdialog">
             </div>
             <div class="fl">
-                <div>
-                    <span>我 </span>
-                    <span><span class="top_info_star">★</span>{{ star }}</span>
-                </div>
+                <span>我 </span>
+                <span class="top_info_star">★</span>
+                <span>{{ star }}</span>
             </div>
         </div>
         <div class="common_body">
             <h5 class="common_title">Vue 挖矿小游戏</h5>
-            <h6 class="common_title_tips">当前挖矿分数: {{ score }} | 目前你已挖完矿区{{ $store.state.mapnum }}次</h6>
+            <h6 class="common_title_tips">当前挖矿分数: {{ score }} | 目前你已挖完矿区{{ mapnum }}次</h6>
             <div class="card_box">
                 <div v-for="(item, key) in grid" :key="key" class="card_item" @click="dig(item)" @contextmenu.prevent="flag(item)" @contextmenu="flag(item)">
                     <div :class="['card_bg', 'open', item.type]" v-if="item.type === 'success' || item.type === 'error'">
@@ -51,8 +50,8 @@
                                                 <img :src="item.icon">
                                             </div>
                                             <div class="card_demining_time_body" slot="reference">
-                                                <span v-if="!item.click">
-                                                    <el-statistic @finish="pickaxeFinish(index)" format="mm:ss" :value="item.time" time-indices></el-statistic>
+                                                <span v-if="!cd[index].click">
+                                                    <el-statistic @finish="pickaxeFinish(index)" format="mm:ss" :value="cd[index].time" time-indices></el-statistic>
                                                 </span>
                                                 <span v-else>完成！</span>
                                             </div>
@@ -61,6 +60,12 @@
                                 </div>
                             </li>
                         </ul>
+                        <div class="hooper-next" @click="next">
+                            <svg viewBox="0 0 24 24" width="24px" height="24px">
+                                <path d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -84,10 +89,10 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <div class="upload">
-                    <el-upload action="#" class="item" :http-request="httpRequest" :show-file-list="false">
+                    <el-upload action="#" class="item" :http-request="httpRequest" :show-file-list="false" accept="image/*">
                         <el-button type="primary">修改头像</el-button>
                     </el-upload>
-                    <el-upload action="#" class="item" :http-request="importdata" :show-file-list="false">
+                    <el-upload action="#" class="item" :http-request="importdata" :show-file-list="false" accept="application/json">
                         <el-button type="info">导入</el-button>
                     </el-upload>
                     <el-button type="warning" class="item" @click="exportdata">导出</el-button>
@@ -102,6 +107,19 @@
                 <el-button type="primary" @click="cleardata">确定</el-button>
             </span>
         </el-dialog>
+        <el-dialog title="游戏作弊" :visible.sync="nextshow" width="35%" :before-close="next">
+            <div class="dialog-footer">
+                <el-button @click="cheating(0)">铁镐冷却</el-button>
+                <el-button type="info" @click="cheating(1)">银稿冷却</el-button>
+                <el-button type="warning" @click="cheating(2)">金稿冷却</el-button>
+            </div>
+        </el-dialog>
+        <el-dialog title="你成功打开了秘笈！" :visible.sync="cheatsshow" width="30%" :before-close="cheats">
+            <span>通往哲♂学♂之路啊，我命令你开启吧！</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="success" @click="digAllMines">开启！</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -111,6 +129,7 @@
     export default {
         data () {
             return {
+                cd: [],
                 grid: [],
                 star: 0,
                 mines: 30,
@@ -118,9 +137,32 @@
                 avatar: '',
                 mapnum: 0,
                 pickaxe: 0,
-                pickaxes: [],
+                pickaxes: [
+                    {
+                        name: '铁镐',
+                        desc: '一把简单的镐，十分钟就能做出来，但是能成功挖出来的星星矿和宝石并不多！',
+                        icon: require('@/assets/images/pickaxe/0.png')
+                    },
+                    {
+                        name: '银稿',
+                        desc: '银质的镐，制作需要半小时，挖出来的星星矿和宝石至少比铁镐多！',
+                        icon: require('@/assets/images/pickaxe/1.png')
+                    },
+                    {
+                        name: '金稿',
+                        desc: '制作工艺非常难的镐，制作需要一小时，金镐能最大程度减少挖掘对星星矿和宝石造成的破坏，所以挖出来的星星矿和宝石的产量非常高！',
+                        icon: require('@/assets/images/pickaxe/2.png')
+                    },
+                    {
+                        name: '保罗炸弹',
+                        desc: '感受保罗的愤怒吧！能一次性轰开3×3片矿区！',
+                        icon: require('@/assets/images/pickaxe/3.png')
+                    }
+                ],
+                nextshow: false,
                 clearshow: false,
                 frequency: 0,
+                cheatsshow: false,
                 minePositions: [],
                 dialogVisible: false,
                 currentTimeStamp: 0
@@ -129,20 +171,36 @@
         created () {
             this.initGrid();
             this.userinfo();
+            this.checkInput();
+            console.log(...[
+                '%c You have successfully unlocked the manual! To the path of philosophy, I command you to open! \n                Up, Up, Down, Down, Left, Left, Right, R ight, B, A, B, A                      \n                         https://github.com/setube/vue-mining                                 ',
+                'background: #E72264; padding:5px 0; color: #FFFFFF;'
+            ]);
         },
         methods: {
+            cheats () {
+                this.cheatsshow = !this.cheatsshow;
+            },
+            cheating (index) {
+                this.cd[index].time = 0;
+                this.cd[index].click = true;
+                this.$store.commit('setCd', this.cd);
+            },
+            next () {
+                this.nextshow = !this.nextshow;
+            },
             importdata (data) {
                 const file = data.file;
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     try {
                         const data = JSON.parse(e.target.result);
+                        this.$store.commit('setCd', data.cd);
                         this.$store.commit('setStar', data.star);
                         this.$store.commit('setGrid', data.grid);
                         this.$store.commit('setScore', data.score);
                         this.$store.commit('setMapnum', data.mapnum);
                         this.$store.commit('setAvatar', data.avatar);
-                        this.$store.commit('setPickaxes', data.pickaxes);
                         this.$store.commit('setFrequency', data.frequency);
                         location.reload();
                     } catch (err) {
@@ -169,10 +227,11 @@
                 location.reload();
             },
             userinfo () {
+                this.cd = this.$store.state.cd;
                 this.star = this.$store.state.star;
                 this.score = this.$store.state.score;
                 this.avatar = this.$store.state.avatar;
-                this.pickaxes = this.$store.state.pickaxes;
+                this.mapnum = this.$store.state.mapnum;
                 this.frequency = this.$store.state.frequency;
                 this.currentTimeStamp = new Date().getTime();
             },
@@ -180,28 +239,24 @@
                 const _this = this;
                 const reader = new FileReader();
                 const file = data.file;
-                reader.readAsDataURL(file);
                 reader.onloadend = (e) => {
                     try {
-                        const img = new Image();
-                        img.onload = () => {
+                        const image = new Image();
+                        image.onload = () => {
                             const newWidth = 100;
-                            const aspectRatio = img.width / img.height;
+                            const aspectRatio = image.width / image.height;
                             const newHeight = newWidth / aspectRatio;
                             const canvas = document.createElement('canvas');
                             const ctx = canvas.getContext('2d');
                             canvas.width = newWidth;
                             canvas.height = newHeight;
-                            ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                            ctx.drawImage(image, 0, 0, newWidth, newHeight);
                             const newImageUrl = canvas.toDataURL('image/jpeg');
                             _this.avatar = newImageUrl;
                             this.$store.commit('setAvatar', newImageUrl);
                         }
-                        img.src = e.target.result;
-                        Message({
-                            message: '头像修改成功~',
-                            type: 'success'
-                        });
+                        image.src = e.target.result;
+                        Message({ message: '头像修改成功~', type: 'success' });
                     } catch (err) {
                         Message.error('头像修改失败, 错误信息:' + err);
                     }
@@ -212,16 +267,26 @@
                 this.dialogVisible = !this.dialogVisible;
             },
             pickaxeFinish (index) {
-                this.pickaxes[index].click = true;
-                this.$store.commit('setPickaxes', this.pickaxes);
+                this.cd[index].click = true;
+                this.$store.commit('setCd', this.cd);
             },
             clickPickaxe (index) {
                 this.pickaxe = index;
             },
             initGrid () {
-                if (this.$store.state.grid.length && this.$store.state.grid.length < 225) this.grid = this.$store.state.grid;
-                else for (let i = 0; i < 225; i++) this.grid.push({ id: i, type: '', mined: false, flagged: false, score: 0, mines: 0 });
-                this.placeMines();
+                if (this.$store.state.grid.length) {
+                    this.grid = this.$store.state.grid;
+                    const grid = this.grid.every(item => !item.mined || item.flagged);
+                    if (grid) {
+                        this.grid = [];
+                        for (let i = 0; i < 225; i++) this.grid.push({ id: i, type: '', mined: false, flagged: false, score: 0, mines: 0 });
+                        this.placeMines();
+                    }
+                } else {
+                    for (let i = 0; i < 225; i++) this.grid.push({ id: i, type: '', mined: false, flagged: false, score: 0, mines: 0 });
+                    this.placeMines();
+                }
+                this.$store.commit('setGrid', this.grid);
             },
             placeMines () {
                 let placedMines = new Set();
@@ -234,25 +299,62 @@
                     }
                 }
             },
-            countAdjacentMines (data, id, gridSize) {
+            alculateSurroundingStars (data, id, gridSize) {
                 const rowIndex = Math.floor(id / gridSize);
                 const colIndex = id % gridSize;
-                const directions = [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, -1], [1, 1]];
+                const offsets = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
                 let mineCount = 0;
-                for (const [rowOffset, colOffset] of directions) {
+                for (const [rowOffset, colOffset] of offsets) {
                     const newRowIndex = rowIndex + rowOffset;
                     const newColIndex = colIndex + colOffset;
                     if (newRowIndex >= 0 && newRowIndex < gridSize && newColIndex >= 0 && newColIndex < gridSize) {
                         const adjacentId = newRowIndex * gridSize + newColIndex;
-                        if (data[adjacentId].mined) mineCount++;
+                        const adjacentItem = data[adjacentId];
+                        if (adjacentItem.mined) mineCount++;
                     }
                 }
                 return mineCount;
             },
+            digAllMines () {
+                for (let i = 0; i < this.grid.length; i++) {
+                    const item = this.grid[i];
+                    if (item.mined && !item.flagged) {
+                        this.star++;
+                        item.type = 'success';
+                        item.mined = false;
+                    }
+                }
+                this.cd.forEach((item) => {
+                    item.time = 0;
+                    item.click = true;
+                });
+                this.cheatsshow = false;
+                this.$store.commit('setCd', this.cd);
+                this.$store.commit('setStar', this.star);
+            },
+            checkInput () {
+                const secretKeyCode = [38, 38, 40, 40, 37, 37, 39, 39, 66, 65, 66, 65];
+                let secretKeyCodeStatus = new Array(secretKeyCode.length).fill(0);
+                const CORRECT_STATUS = 1;
+                document.onkeydown = (event) => {
+                    let correctCodeIndex = secretKeyCodeStatus.lastIndexOf(CORRECT_STATUS);
+                    correctCodeIndex = correctCodeIndex === -1 ? 0 : correctCodeIndex + 1;
+                    if (correctCodeIndex > secretKeyCode.length) this.cheatsshow = true;
+                    if (event.keyCode === secretKeyCode[correctCodeIndex]) {
+                        if (correctCodeIndex + 1 === secretKeyCodeStatus.length) {
+                            this.cheatsshow = true;
+                            secretKeyCodeStatus = new Array(secretKeyCode.length).fill(0);
+                        } else {
+                            secretKeyCodeStatus[correctCodeIndex] = CORRECT_STATUS;
+                        }
+                    } else {
+                        secretKeyCodeStatus = new Array(secretKeyCode.length).fill(0);
+                    }
+                };
+            },
             dig (item) {
-                if (!item.flagged && this.pickaxes[this.pickaxe].click) {
-                    const adjacentMines = this.countAdjacentMines(this.grid, item.id, 15);
-                    this.pickaxes[this.pickaxe].mines = adjacentMines === 0 ? '' : adjacentMines.toString();
+                if (!item.flagged && this.cd[this.pickaxe].click) {
+                    if (this.pickaxe === 3) this.revealAdjacent3x3(this.grid, item.id, 15);
                     if (item.mined) {
                         this.star++;
                         item.type = 'success';
@@ -260,6 +362,7 @@
                     } else {
                         item.type = 'error';
                     }
+                    item.mines = this.alculateSurroundingStars(this.grid, item.id, 15);
                     Message({
                         message: item.type == 'success' ? `恭喜你，挖到了宝贵的星星矿石，${item.mines ? '同时探测器检测到周围有' + item.mines + '座星星矿' : '探测器未检测到周围有星星矿'}` : `你没有挖到星星矿石，${item.mines ? '同时探测器检测到周围有' + item.mines + '座星星矿' : '探测器未检测到周围有星星矿'}`,
                         type: 'success'
@@ -275,19 +378,49 @@
                             scoreIncrement = 2;
                             timeIncrement = 30 * 60 * 1000;
                             break;
-                        default:
+                        case 2:
                             scoreIncrement = 3;
                             timeIncrement = 60 * 60 * 1000;
+                            break;
+                        default:
+                            scoreIncrement = 1;
+                            timeIncrement = 120 * 60 * 1000;
                     }
                     item.score += scoreIncrement;
-                    this.pickaxes[this.pickaxe].time = this.currentTimeStamp + timeIncrement;
-                    this.pickaxes[this.pickaxe].click = false;
                     item.flagged = true;
                     this.score += item.score;
+                    this.cd[this.pickaxe].time = this.currentTimeStamp + timeIncrement;
+                    this.cd[this.pickaxe].click = false;
+                    this.$store.commit('setCd', this.cd);
                     this.$store.commit('setGrid', this.grid);
                     this.$store.commit('setScore', this.score);
-                    this.$store.commit('setPickaxes', this.pickaxes);
                     this.checkAllCleared();
+                }
+            },
+            revealAdjacent3x3 (data, id, gridSize) {
+                const rowIndex = Math.floor(id / gridSize);
+                const colIndex = id % gridSize;
+                const offsets = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
+                for (const [rowOffset, colOffset] of offsets) {
+                    const newRowIndex = rowIndex + rowOffset;
+                    const newColIndex = colIndex + colOffset;
+                    if (newRowIndex >= 0 && newRowIndex < gridSize && newColIndex >= 0 && newColIndex < gridSize) {
+                        const adjacentId = newRowIndex * gridSize + newColIndex;
+                        const adjacentItem = data[adjacentId];
+                        if (!adjacentItem.flagged && !adjacentItem.mined) {
+                            this.score += adjacentItem.score;
+                            adjacentItem.type = 'error';
+                            adjacentItem.mines = this.alculateSurroundingStars(this.grid, adjacentId, 15);
+                            adjacentItem.flagged = true;
+                        } else if (adjacentItem.mined && !adjacentItem.flagged) {
+                            this.star++;
+                            adjacentItem.type = 'success';
+                            this.$store.commit('setStar', this.star);
+                        }
+                        this.score++;
+                        this.$store.commit('setGrid', this.grid);
+                        this.$store.commit('setScore', this.score);
+                    }
                 }
             },
             flag (item) {
@@ -297,10 +430,7 @@
                 const allCellsDug = this.grid.every(item => item.type !== '');
                 const allMinesFlagged = this.grid.every(item => !item.mined || item.flagged);
                 if (allMinesFlagged || allCellsDug) {
-                    Message({
-                        message: `恭喜你，所有${allMinesFlagged ? '矿石' : '矿区'}都已被挖完！`,
-                        type: 'success'
-                    });
+                    Message({ message: `恭喜你，所有${allMinesFlagged ? '矿石' : '矿区'}都已被挖完！`, type: 'success' });
                     this.initGrid();
                     this.mapnum++;
                     this.frequency++;
@@ -620,7 +750,7 @@
         border-radius: 5px;
         left: 50%;
         transform: translateX(-120px);
-        width: 240px;
+        width: 300px;
         height: 62px;
         box-shadow: 0 0 5px rgba(0, 0, 0, .3);
     }
@@ -651,17 +781,28 @@
         margin: 0;
     }
 
+    .hooper-next {
+        background-color: transparent;
+        border: none;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        right: 0;
+        padding: 0;
+    }
+
     .hooper-slide {
         flex-shrink: 0;
         height: 100%;
         margin: 0;
         padding: 0;
-        width: 240px;
+        width: 300px;
         list-style: none;
     }
 
     .demin_tool_hooper_item_body {
-        width: 216px;
+        width: 300px;
         margin: 0 auto;
     }
 
