@@ -2,9 +2,9 @@
     <div id="app">
         <a href="https://github.com/setube/vue-mining" class="github-corner" aria-label="View source on GitHub">
             <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0; z-index: 2;" aria-hidden="true">
-                <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
-                <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
-                <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+                <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" />
+                <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm" />
+                <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body" />
             </svg>
         </a>
         <div class="card_top_userinfo_body clearfix">
@@ -18,24 +18,32 @@
             </div>
         </div>
         <div class="common_body">
-            <h5 class="common_title">Vue 挖矿小游戏</h5>
-            <h6 class="common_title_tips">当前挖矿分数: {{ score }} | 目前你已挖完矿区{{ mapnum }}次</h6>
+            <h5 class="common_title">
+                Vue 挖矿小游戏
+            </h5>
+            <h6 class="common_title_tips">
+                当前挖矿分数: {{ score }} | 目前你已挖完矿区{{ mapnum }}次
+            </h6>
             <div class="card_box">
                 <div v-for="(item, key) in grid" :key="key" class="card_item" @click="dig(item)" @contextmenu.prevent="flag(item)" @contextmenu="flag(item)">
                     <div :class="['card_bg', 'open', item.type]" v-if="item.type === 'success' || item.type === 'error'">
                         <el-tooltip effect="dark" placement="top">
                             <div slot="content" class="content">
-                                <div class="desc">挖取这座矿区你获得了{{ item.score }}分</div>
-                                <div class="desc">{{ item.type === 'success' ? '恭喜你挖到了宝贵的星星矿石' : item.mines ? '探测器检测到周围有' + item.mines + '座星星矿' : '探测器未检测到周围有星星矿' }}</div>
+                                <div class="desc">
+                                    挖取这座矿区你获得了{{ item.score }}分
+                                </div>
+                                <div class="desc">
+                                    {{ item.type === 'success' ? '恭喜你挖到了宝贵的星星矿石' : item.mines ? '探测器检测到周围有' + item.mines + '座星星矿' : '探测器未检测到周围有星星矿' }}
+                                </div>
                             </div>
                             <div>
                                 <span v-if="item.type === 'error'">{{ item.mines }}</span>
                                 <span v-else>★</span>
-                                <img :src="avatar" class="avatar" />
+                                <img :src="avatar" class="avatar">
                             </div>
                         </el-tooltip>
                     </div>
-                    <div :class="['card_bg', 'map-' + frequency]" v-else></div>
+                    <div :class="['card_bg', 'map-' + frequency]" v-else />
                 </div>
             </div>
             <div class="card_demining_tool_body">
@@ -51,7 +59,7 @@
                                             </div>
                                             <div class="card_demining_time_body" slot="reference">
                                                 <span v-if="!cd[index].click">
-                                                    <el-statistic @finish="pickaxeFinish(index)" format="mm:ss" :value="cd[index].time" time-indices></el-statistic>
+                                                    <el-statistic @finish="pickaxeFinish(index)" format="mm:ss" :value="cd[index].time" time-indices />
                                                 </span>
                                                 <span v-else>完成！</span>
                                             </div>
@@ -62,28 +70,34 @@
                         </ul>
                         <div class="hooper-next" @click="next">
                             <svg viewBox="0 0 24 24" width="24px" height="24px">
-                                <path d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"></path>
+                                <path d="M0 0h24v24H0z" fill="none" />
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
                             </svg>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="bg_1"></div>
-        <div class="bg_2"></div>
+        <div class="bg_1" />
+        <div class="bg_2" />
         <el-dialog title="我的信息" :visible.sync="dialogVisible" width="95%" class="dialog">
             <div class="top_info_more_body">
                 <div class="top_moreinfo_avatar_pic_body set_pointer">
                     <img :src="avatar" class="top_moreinfo_avatar_pic">
                 </div>
-                <div class="top_moreinfo_name">我</div>
+                <div class="top_moreinfo_name">
+                    我
+                </div>
                 <div class="top_moreinfo_body clearfix">
                     <div class="top_moreinfo_box">
-                        <div class="top_moreinfo_label">星星：{{ star }}</div>
+                        <div class="top_moreinfo_label">
+                            星星：{{ star }}
+                        </div>
                     </div>
                     <div class="top_moreinfo_box">
-                        <div class="top_moreinfo_label">等级：{{ mapnum }}</div>
+                        <div class="top_moreinfo_label">
+                            等级：{{ mapnum }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -109,9 +123,15 @@
         </el-dialog>
         <el-dialog title="游戏作弊" :visible.sync="nextshow" width="95%" :before-close="next">
             <div class="dialog-footer">
-                <el-button @click="cheating(0)">铁镐冷却</el-button>
-                <el-button type="info" @click="cheating(1)">银稿冷却</el-button>
-                <el-button type="warning" @click="cheating(2)">金稿冷却</el-button>
+                <el-button @click="cheating(0)">
+                    铁镐冷却
+                </el-button>
+                <el-button type="info" @click="cheating(1)">
+                    银稿冷却
+                </el-button>
+                <el-button type="warning" @click="cheating(2)">
+                    金稿冷却
+                </el-button>
             </div>
         </el-dialog>
         <el-dialog :title="cheatsshow ? '你成功打开了秘笈！' : ''" :visible.sync="cheatsshow" width="95%" :before-close="cheats">
@@ -139,6 +159,7 @@
                 avatar: '',
                 mapnum: 0,
                 pickaxe: 0,
+                success: false,
                 pickaxes: [
                     {
                         name: '铁镐',
@@ -278,8 +299,9 @@
             initGrid () {
                 if (this.$store.state.grid.length) {
                     this.grid = this.$store.state.grid;
-                    const grid = this.grid.every(item => !item.mined || item.flagged);
-                    if (grid) {
+                    const allCellsDug = this.grid.every(item => item.type !== '');
+                    const allMinesFlagged = this.grid.every(item => !item.mined || item.flagged);
+                    if (allCellsDug || allMinesFlagged) {
                         this.grid = [];
                         for (let i = 0; i < 225; i++) this.grid.push({ id: i, type: '', mined: false, flagged: false, score: 0, mines: 0 });
                         this.placeMines();
@@ -366,7 +388,7 @@
                     }
                     item.mines = this.alculateSurroundingStars(this.grid, item.id, 15);
                     Message({
-                        message: item.type == 'success' ? `恭喜你，挖到了宝贵的星星矿石，${item.mines ? '同时探测器检测到周围有' + item.mines + '座星星矿' : '探测器未检测到周围有星星矿'}` : `你没有挖到星星矿石，${item.mines ? '同时探测器检测到周围有' + item.mines + '座星星矿' : '探测器未检测到周围有星星矿'}`,
+                        message: item.type == 'success' || this.success ? `恭喜你，挖到了宝贵的星星矿石，${item.mines ? '同时探测器检测到周围有' + item.mines + '座星星矿' : '探测器未检测到周围有星星矿'}` : `你没有挖到星星矿石，${item.mines ? '同时探测器检测到周围有' + item.mines + '座星星矿' : '探测器未检测到周围有星星矿'}`,
                         type: 'success'
                     });
                     let scoreIncrement;
@@ -416,10 +438,12 @@
                             adjacentItem.flagged = true;
                         } else if (adjacentItem.mined && !adjacentItem.flagged) {
                             this.star++;
+                            this.success = true;
                             adjacentItem.type = 'success';
                             this.$store.commit('setStar', this.star);
                         }
                         this.score++;
+                        adjacentItem.score++;
                         this.$store.commit('setGrid', this.grid);
                         this.$store.commit('setScore', this.score);
                     }
@@ -432,13 +456,13 @@
                 const allCellsDug = this.grid.every(item => item.type !== '');
                 const allMinesFlagged = this.grid.every(item => !item.mined || item.flagged);
                 if (allMinesFlagged || allCellsDug) {
-                    Message({ message: `恭喜你，所有${allMinesFlagged ? '矿石' : '矿区'}都已被挖完！`, type: 'success' });
                     this.initGrid();
                     this.mapnum++;
                     this.frequency++;
                     if (this.frequency === 17) this.frequency = 0;
                     this.$store.commit('setMapnum', this.mapnum);
                     this.$store.commit('setFrequency', this.frequency);
+                    Message({ message: `恭喜你，所有${allMinesFlagged ? '矿石' : '矿区'}都已被挖完！`, type: 'success' });
                 }
             },
         }
@@ -584,7 +608,7 @@
     }
 
     .common_body {
-        padding: 0 0 20px;
+        padding: 80px 10px 0;
         margin: 0 auto;
         max-width: 660px;
         overflow: hidden;
@@ -594,6 +618,7 @@
         font-size: 22px;
         line-height: 32px;
         text-align: center;
+        padding: 0 0 20px;
     }
 
     .common_title_tips {
@@ -609,6 +634,7 @@
         width: 100%;
         justify-content: center;
         align-items: center;
+        margin: 10px auto;
     }
 
     .card_item {
@@ -842,6 +868,78 @@
 </style>
 
 <style>
+    * {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    article,
+    aside,
+    blockquote,
+    body,
+    button,
+    code,
+    dd,
+    details,
+    div,
+    dl,
+    dt,
+    fieldset,
+    figcaption,
+    figure,
+    footer,
+    form,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    header,
+    hgroup,
+    hr,
+    input,
+    legend,
+    li,
+    menu,
+    nav,
+    ol,
+    p,
+    pre,
+    section,
+    td,
+    textarea,
+    th,
+    ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    article,
+    aside,
+    audio,
+    canvas,
+    details,
+    div,
+    figcaption,
+    figure,
+    footer,
+    header,
+    mark,
+    menu,
+    nav,
+    section,
+    summary,
+    time,
+    video {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        font-size: 100%;
+        vertical-align: middle;
+        background: transparent;
+    }
+
     body,
     html {
         font-size: 14px;
