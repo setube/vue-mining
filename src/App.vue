@@ -173,7 +173,7 @@
             this.userinfo();
             this.checkInput();
             console.log(...[
-                '%c You have successfully unlocked the manual! To the path of philosophy, I command you to open! \n                Up, Up, Down, Down, Left, Left, Right, R ight, B, A, B, A                      \n                         https://github.com/setube/vue-mining                                 ',
+                '%c You have successfully unlocked the manual! To the path of philosophy, I command you to open! \n                Up, Up, Down, Down, Left, Left, Right, Right, B, A, B, A                      \n                         https://github.com/setube/vue-mining                                 ',
                 'background: #E72264; padding:5px 0; color: #FFFFFF;'
             ]);
         },
