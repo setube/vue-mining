@@ -219,7 +219,7 @@
                 this.pickaxe = index;
             },
             initGrid () {
-                if (this.$store.state.grid.length) this.grid = this.$store.state.grid;
+                if (this.$store.state.grid.length && this.$store.state.grid.length < 225) this.grid = this.$store.state.grid;
                 else for (let i = 0; i < 225; i++) this.grid.push({ id: i, type: '', mined: false, flagged: false, score: 0, mines: 0 });
                 this.placeMines();
             },
