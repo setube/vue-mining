@@ -2,7 +2,7 @@
 本项目基于Vue.js开发, 项目想法来源于[广树](https://github.com/eeg1412)的[维基萌抽卡 - 星星矿场](https://github.com/eeg1412/wikimoeCardByNodeJS)
 
 # 项目预览
-![预览图](https://s1.locimg.com/2024/05/27/6abca0c2cb1d8.png)
+![预览图](https://i0.hdslb.com/bfs/article/61f32d3ccfe903473e7527cefafb8b938941412.png@1e_1c.webp)
 
 # 安装依赖
 npm i
